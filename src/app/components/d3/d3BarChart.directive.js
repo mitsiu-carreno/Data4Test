@@ -9,51 +9,117 @@
       var directive = {
         restrict  : 'E',
         scope     : {
-          data  : '@',  // idh data
-          state : '@',  // selected state
-          sort  : '@',  // sort mode
-          year  : '@'   // selected year
+          data  : '=',  // idh data
+          state : '=',  // selected state
+          sort  : '=',  // selected order
+          label : '@'
         },
-        link        : graphLink,
-        controller  : idhGraphController,
-        controllerAs: 'vm'
+        link        : graphLink
       };
 
       return directive;
 
       function graphLink(scope, el, attr, vm){
 
+        scope.$watch('state', function(){
+          return scope.render(scope.data);
+
+        },true);
+
+        scope.$watch('sort', function(){
+          if(scope.sort == "A"){        //Ascending
+            //$scope.$watch(function(){
+              scope.data.sort(function(a, b){
+                return a.idh - b.idh;
+              });
+            //});
+            return scope.render(scope.data);
+          }else if(scope.sort == "D"){  //Decending
+            //$scope.$watch(function(){
+              scope.data.sort(function(a, b){
+                return b.idh - a.idh;
+              });
+            //}, true);
+            return scope.render(scope.data);
+          }else{                              //Alphabetical
+            scope.data.sort(function(a, b){
+              var nameA = a.fullName.toLowerCase(), nameB = b.fullName.toLowerCase()
+              if(nameA < nameB){
+                return -1;
+              }else if(nameA > nameB){
+                return 1;
+              }else {
+                return 0
+              }
+            });
+            return scope.render(scope.data);
+          }
+
+        }, true);
+
+
+        scope.$watch('data', function(){
+          console.log(scope.data);
+          return scope.render(scope.data);
+        });
         //Create an svg tag inside element
         var svg = d3.select(el[0])
           .append('svg')
-          .attr("width", "100%")
-          .attr("height", "100%");
+          .attr("width", "100%");
 
-        var margin = {top:20, right:20, bottom:30, left:40},
-          width  =+ svg.attr('width') - margin.left - margin.right,
-          height =+ svg.attr('height') - margin.top - margin.bottom;
+        window.onresize = function(){
+          return scope.$apply()
+        };
+        scope.$watch(function(){
+          return angular.element(window)[0].innerWidth;
+        }, function(){
+          return scope.render(scope.data);
+        });
 
-        var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-            y = d3.scaleLinear().rangeRound([height, 0]);
+        scope.render = function(data){
+          svg.selectAll("*").remove();
 
-        var g = svg.append('g')
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          var width, height, max;
+          //width = d3.select(el[0])[0][0].offsetWidth - 20;
+          width = 500;
+          height = scope.data.length * 35;
+          max = 1;
 
-        d3.tsv("../app/components/fixedData.tsv", function(d){
-          d.frequency =+ d.frequency;
-          return d;
-        }, function(err, data){
-          if(err){
-            console.error("Err while reading tvs" + err);
-            throw err;
-          }
-        })
+          svg.attr("height", height);
+
+          svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("fill", "#7f9fb6")
+            .attr("height", 30)
+            .attr("width", 0)
+            .attr("x", 10)
+            .attr("id", function(d){return d.shortName})
+            .attr("y", function(d, i){
+              return i * 35;
+            })
+            .transition()
+            .duration(1000)
+            .attr("width", function(d){
+              return d.idh/(max/width);
+            });
+
+          svg.select("#" + scope.state)
+            .attr("stroke", "#004677")
+            .attr("fill", "#fff");
+
+          svg.selectAll("text")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("fill", "#455560")
+            .attr("y", function(d,i){return i * 35 + 22})
+            .attr("x", 15)
+            .text(function(d){return d[scope.label] +" ("+d.idh+")";});
+        };
+
       }
 
-      function idhGraphController(){
-        var vm = this;
-
-        console.log('In directive controller');
-      }
-    }
+    };
 })();

@@ -6,7 +6,7 @@
   .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($interval, helper, $http) {
+  function MainController($scope, helper, $http) {
     var vm = this;
 
     vm.states = [];         //Array that contains every state and it shortname
@@ -14,7 +14,7 @@
     vm.orderOptions = [{name:"Ascendente", id:"A"},{name:"Descendente", id:"D"},{name:"Alfabéticamente", id:"AZ"}];
     vm.currentYear = new Date().getFullYear();
     vm.selectedYear = new Date().getFullYear();     //Default year selected
-    vm.selectedState = 1;   //Default state selected
+    vm.selectedState = "Ags";   //Default state selected
     vm.selectedOrder = vm.orderOptions[0].id;       //Default order selected
     vm.dataFilteredByYear = [];   //Array with idh only from the year selected
 
@@ -77,18 +77,25 @@
           vm.dataFilteredByYear = angular.copy(yearEntry);
         }
       });
+      sortDataGraph();
     }
 
     //Sort the data according to input
     function sortDataGraph (){
       if(vm.selectedOrder == "A"){        //Ascending
-        vm.dataFilteredByYear.states.sort(function(a, b){
-          return a.idh - b.idh;
-        });
+        //$scope.$watch(function(){
+          vm.dataFilteredByYear.states.sort(function(a, b){
+            return a.idh - b.idh;
+          });
+        //});
+
       }else if(vm.selectedOrder == "D"){  //Decending
-        vm.dataFilteredByYear.states.sort(function(a, b){
-          return b.idh - a.idh;
-        });
+        //$scope.$watch(function(){
+          vm.dataFilteredByYear.states.sort(function(a, b){
+            return b.idh - a.idh;
+          });
+        //}, true);
+
       }else{                              //Alphabetical
         vm.dataFilteredByYear.states.sort(function(a, b){
           var nameA = a.fullName.toLowerCase(), nameB = b.fullName.toLowerCase()
@@ -100,9 +107,10 @@
             return 0
           }
         });
+      //  $scope.$apply();
       }
     }
-
+/*
     var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -147,6 +155,7 @@
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
     });
+    */
 
     /*
     $interval(function(){

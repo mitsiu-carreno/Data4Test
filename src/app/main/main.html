@@ -9,7 +9,7 @@
     <!--State select-->
     <div class="col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1 col-xs-4">
       <label>Estado</label>
-      <select class="form-control" ng-options="state.id as state.fullName for state in main.states" ng-model="main.selectedState">
+      <select class="form-control" ng-options="state.shortName as state.fullName for state in main.states" ng-model="main.selectedState">
       </select>
     </div>
     <!--Year select-->
@@ -25,10 +25,16 @@
       </select>
     </div>
   </div>
-  <svg width="960" height="500"></svg>
 
-  <idh-graph data="[{name: 'Greg', score:98},{name: 'Ari', score:96},{name: 'Loser', score: 48}, {name:'mitsiu', score:90}]" state="cdmx" sort="a" year="[2015, 2016, 2017]" label="name"></idh-graph>
-  <!--<idh-graph data='main.dataFilteredByYear' state='main.selectedState' sort='main.selectedOrder' year='main.selectedYear' label="name"></idh-graph>-->
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1" style="padding-top:30px; padding-bottom:30px;">
+
+      <!--<idh-graph data="[{name: 'Greg', score:98},{name: 'Ari', score:96},{name: 'Loser', score: 48}, {name:'mitsiu', score:90}]" state="cdmx" sort="a" year="[2015, 2016, 2017]" label="name"></idh-graph>-->
+      <idh-graph data="main.dataFilteredByYear.states" state='main.selectedState' sort="main.selectedOrder" label="fullName"></idh-graph>
+    </div>
+  </div>
+  <!--<svg width="960" height="500"></svg>-->
+
   <div class="row">
     <div class="col-md-4 col-md-offset-1">
       <p>
