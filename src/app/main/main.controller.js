@@ -6,7 +6,7 @@
   .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController() {
+  function MainController($interval, helper) {
     var vm = this;
 
     var svg = d3.select("svg"),
@@ -53,5 +53,10 @@
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
     });
+
+    $interval(function(){
+      console.log(helper.generateRandom(0, 10, 4));
+     }, 1000);
+
   }
 })();
