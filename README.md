@@ -15,4 +15,4 @@ $ gulp serve
 
 ## Nota:
 * Muchas gracias por la atención recibida, cualquier duda o comentario adjunto mi correo:
-### mitsiu.carreno@gmail.com
+mitsiu.carreno@gmail.com
