@@ -9,36 +9,36 @@
     <!--State select-->
     <div class="col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1 col-xs-4">
       <label>Estado</label>
-      <select class="form-control" ng-options="state.id as state.fullName for state in main.states" ng-model="main.selectedState" ng-change="main.renderGraph()">
+      <select class="form-control" ng-options="state.id as state.fullName for state in main.states" ng-model="main.selectedState">
       </select>
     </div>
     <!--Year select-->
     <div class="col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1 col-xs-4">
       <label>Año</label>
-      <select class="form-control" ng-options="yearRegistry.year as yearRegistry.year for yearRegistry in main.data" ng-model="main.selectedYear" ng-change="main.renderGraph()">
+      <select class="form-control" ng-options="yearRegistry.year as yearRegistry.year for yearRegistry in main.data" ng-model="main.selectedYear" ng-change="main.getDataGraph()">
       </select>
     </div>
     <!--Order select-->
     <div class="col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1 col-xs-4">
       <label>Ordenar Datos</label>
-      <select class="form-control" ng-options="order.id as order.name for order in main.orderOptions" ng-model="main.selectedOrder" ng-change="main.renderGraph()">
+      <select class="form-control" ng-options="order.id as order.name for order in main.orderOptions" ng-model="main.selectedOrder" ng-change="main.sortDataGraph()">
       </select>
     </div>
   </div>
   <svg width="960" height="500"></svg>
 
-  <!--<idh-graph data="[{name: 'Greg', score:98},{name: 'Ari', score:96},{name: 'Loser', score: 48}, {name:'mitsiu', score:90}]" state="cdmx" sort="a" year="[2015, 2016, 2017]" label="name"></idh-graph>-->
-  <idh-graph data='main.dataFilteredByYear' state='main.selectedState' sort='main.selectedOrder' year='main.selectedYear' label="name"></idh-graph>
+  <idh-graph data="[{name: 'Greg', score:98},{name: 'Ari', score:96},{name: 'Loser', score: 48}, {name:'mitsiu', score:90}]" state="cdmx" sort="a" year="[2015, 2016, 2017]" label="name"></idh-graph>
+  <!--<idh-graph data='main.dataFilteredByYear' state='main.selectedState' sort='main.selectedOrder' year='main.selectedYear' label="name"></idh-graph>-->
   <div class="row">
     <div class="col-md-4 col-md-offset-1">
       <p>
-        Promedio IDH : {{main.averageIdh | number:2}}
+        Promedio IDH : {{main.dataFilteredByYear.averageIdh | number:2}}
       </p>
       <p>
-        IDH más alto : {{main.highestIdh}}
+        IDH más alto : {{main.dataFilteredByYear.highestIdh}}
       </p>
       <p>
-        IDH más bajo : {{main.lowestIdh}}
+        IDH más bajo : {{main.dataFilteredByYear.lowestIdh}}
       </p>
     </div>
   </div>
