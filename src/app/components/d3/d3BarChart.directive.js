@@ -12,7 +12,7 @@
           data  : '=',  // idh data
           state : '=',  // selected state
           sort  : '=',  // selected order
-          label : '@'
+          label : '@'   // label used on text
         },
         link        : graphLink
       };
@@ -20,48 +20,21 @@
       return directive;
 
       function graphLink(scope, el, attr, vm){
-
+        //Watch changes on state selection to render graph
         scope.$watch('state', function(){
           return scope.render(scope.data);
-
         },true);
 
+        //Watch changes on sort selection to render graph
         scope.$watch('sort', function(){
-          if(scope.sort == "A"){        //Ascending
-            //$scope.$watch(function(){
-              scope.data.sort(function(a, b){
-                return a.idh - b.idh;
-              });
-            //});
-            return scope.render(scope.data);
-          }else if(scope.sort == "D"){  //Decending
-            //$scope.$watch(function(){
-              scope.data.sort(function(a, b){
-                return b.idh - a.idh;
-              });
-            //}, true);
-            return scope.render(scope.data);
-          }else{                              //Alphabetical
-            scope.data.sort(function(a, b){
-              var nameA = a.fullName.toLowerCase(), nameB = b.fullName.toLowerCase()
-              if(nameA < nameB){
-                return -1;
-              }else if(nameA > nameB){
-                return 1;
-              }else {
-                return 0
-              }
-            });
-            return scope.render(scope.data);
-          }
-
+          return scope.render(scope.data);
         }, true);
 
-
+        //Watch changes on year selection to render graph
         scope.$watch('data', function(){
-          console.log(scope.data);
           return scope.render(scope.data);
         });
+
         //Create an svg tag inside element
         var svg = d3.select(el[0])
           .append('svg')
@@ -76,18 +49,22 @@
           return scope.render(scope.data);
         });
 
+        //Function to draw graph
         scope.render = function(data){
-          svg.selectAll("*").remove();
+          if(data !== undefined){   //Directive try to work even if random data isn't generated yet
+            //Clear all previous elements
+            svg.selectAll("*").remove();
 
-          var width, height, max;
-          //width = d3.select(el[0])[0][0].offsetWidth - 20;
-          width = 500;
-          height = scope.data.length * 35;
-          max = 1;
+            //Set measurments for graph
+            var width, height, max;
+            width = el[0].getBoundingClientRect().width - 20;
+            height = scope.data.length * 35;
+            max = 1;
 
-          svg.attr("height", height);
+            svg.attr("height", height);
 
-          svg.selectAll("rect")
+            //Draw each of the rectangles
+            svg.selectAll("rect")
             .data(data)
             .enter()
             .append("rect")
@@ -105,11 +82,13 @@
               return d.idh/(max/width);
             });
 
-          svg.select("#" + scope.state)
+            //Find state selected and change fill and stroke
+            svg.select("#" + scope.state)
             .attr("stroke", "#004677")
             .attr("fill", "#fff");
 
-          svg.selectAll("text")
+            //Draw each of the labels
+            svg.selectAll("text")
             .data(data)
             .enter()
             .append("text")
@@ -117,9 +96,10 @@
             .attr("y", function(d,i){return i * 35 + 22})
             .attr("x", 15)
             .text(function(d){return d[scope.label] +" ("+d.idh+")";});
+          }
         };
 
       }
 
     };
-})();
+})()

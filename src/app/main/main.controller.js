@@ -50,7 +50,7 @@
 
         var idhSum = 0; //summation of idh
         //Foreach state generate random IDH between 0-1 with 2 decimals
-        angular.forEach(newIdhEntry.states, function(state, key) {
+        angular.forEach(newIdhEntry.states, function(state) {
           state.idh = helper.generateRandom(0, 1, 2);
 
           //Calculate the average, lowest and highest idh from selected year
@@ -72,7 +72,7 @@
 
     // Separates only the data from the year selected
     function getDataGraph (){
-      angular.forEach(vm.data, function(yearEntry, key){
+      angular.forEach(vm.data, function(yearEntry){
         if(yearEntry.year == vm.selectedYear){
           vm.dataFilteredByYear = angular.copy(yearEntry);
         }
@@ -83,19 +83,13 @@
     //Sort the data according to input
     function sortDataGraph (){
       if(vm.selectedOrder == "A"){        //Ascending
-        //$scope.$watch(function(){
           vm.dataFilteredByYear.states.sort(function(a, b){
             return a.idh - b.idh;
           });
-        //});
-
       }else if(vm.selectedOrder == "D"){  //Decending
-        //$scope.$watch(function(){
           vm.dataFilteredByYear.states.sort(function(a, b){
             return b.idh - a.idh;
           });
-        //}, true);
-
       }else{                              //Alphabetical
         vm.dataFilteredByYear.states.sort(function(a, b){
           var nameA = a.fullName.toLowerCase(), nameB = b.fullName.toLowerCase()
@@ -107,60 +101,7 @@
             return 0
           }
         });
-      //  $scope.$apply();
       }
     }
-/*
-    var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom;
-
-    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-    y = d3.scaleLinear().rangeRound([height, 0]);
-
-    var g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    d3.tsv("../app/components/fixedData.tsv", function(d) {
-      d.frequency = +d.frequency;
-      return d;
-    }, function(error, data) {
-      if (error) throw error;
-
-      x.domain(data.map(function(d) { return d.letter; }));
-      y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-      g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-      g.append("g")
-      .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y).ticks(10, "%"))
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("Frequency");
-
-      g.selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.letter); })
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("width", x.bandwidth())
-      .attr("height", function(d) { return height - y(d.frequency); });
-    });
-    */
-
-    /*
-    $interval(function(){
-      console.log(helper.generateRandom(0, 10, 4));
-     }, 1000);
-     */
   }
 })();
